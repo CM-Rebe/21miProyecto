@@ -1,0 +1,120 @@
+:root {
+    --border-color: #e2e2e2;
+    --text-color: #222;
+    --muted-color: #666;
+    --accent-color: #7ed956;
+    --nav-bg: #ffffff;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    box-sizing: border-box;
+    /* outline: 1px solid red; NO TOCAR!! ES PARAA CHEQUEAR SI SE DESBORDA */
+}
+
+body {
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/*CATEGORÍAS*/
+#categorias {
+    padding: 50px 24px;
+    text-align: center;
+    scroll-margin-top: 220px;
+}
+
+.categorias-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 0 32px 0;
+    text-align: center;
+    color: var(--text-color);
+    background-color: var(--accent-color);
+}
+
+.categorias-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.categoria-card {
+    flex: 1 1 220px;
+    max-width: 240px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.superImagen {
+    width: 95%;
+    height: auto;
+}
+
+.categoria-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.categoria-nombre {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+}
+
+.categoria-desc {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #222;
+}
+
+.categoria-btn {
+    display: inline-block;
+    padding: 8px 26px;
+    border-radius: 20px;
+    background-color: #222;
+    color: #ffffff;
+    border: 2px solid #222;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.categoria-btn:hover,
+.categoria-btn:focus-visible {
+    background-color: #ffffff;
+    color: #222;
+    border: 2px solid #222;
+}
+
+#productos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 15px
+}
