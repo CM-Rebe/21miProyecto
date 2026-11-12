@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main class="pag-main" style="padding-top: 60px; max-width: 500px;">
+        <form id="formLogin" class="formulario-compra">
+            <h2>Acceso</h2>
+
+            <label for="nombre">Usuario</label>
+            <input type="text" id="nombre" required>
+
+            <label for="contrasena">Contraseña</label>
+            <input type="password" id="contrasena" required>
+
+            <p id="mensajeError" class="mensaje-error oculto"></p>
+            <button type="submit" class="categoria-btn">Entrar</button>
+        </form>
+    </main>
+
+    <script>
+        const formulario = document.querySelector("#formLogin");
+        const mensajeError = document.querySelector("#mensajeError");
+
+        formulario.addEventListener("submit", async evento => {
+            evento.preventDefault();
+
+            const respuesta = await fetch(window.location.pathname, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nombre: formulario.nombre.value.trim(),
+                    contrasena: formulario.contrasena.value
+                })
+            });
+            const resultado = await respuesta.json();
+
+            if (!respuesta.ok) {
+                mensajeError.textContent = resultado.mensaje;
+                mensajeError.classList.remove("oculto");
+                return;
+            }
+
+            window.location.href = window.location.pathname + "/panel";
+        });
+    </script>
+</body>
+</html>

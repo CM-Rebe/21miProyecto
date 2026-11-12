@@ -32,7 +32,6 @@
 
     <main class="pag-main">
         <h1 class="categorias-title">Mi carrito</h1>
-
         <div id="listaCarrito"></div>
 
         <div id="resumenCarrito" class="carrito-resumen oculto">
@@ -40,13 +39,35 @@
             <button id="btnComprar" class="categoria-btn">Comprar</button>
         </div>
 
+        <form id="formularioCompra" class="formulario-compra oculto">
+            <h2>Tus datos</h2>
+
+            <label for="nombre">Nombre y apellido</label>
+            <input type="text" id="nombre" name="nombre" maxlength="100" autocomplete="name" required>
+
+            <label for="mail">Correo electrónico</label>
+            <input type="email" id="mail" name="mail" maxlength="100" autocomplete="email" required>
+
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" maxlength="20" autocomplete="tel" required>
+
+            <p id="mensajeError" class="mensaje-error oculto"></p>
+
+            <div class="formulario-botones">
+                <button type="button" id="btnVolver" class="btn-quitar">Volver al carrito</button>
+                <button type="submit" class="categoria-btn">Enviar</button>
+            </div>
+        </form>
+
         <div id="mensajeCompra" class="mensaje-ok oculto">
-            <p>¡Gracias por elegirnos! Enviános tu pedido por WhatsApp o Instagram y confirmamos stock, precio y envío.
-            </p>
+            <p>¡Gracias por elegirnos! Tu número de carrito es:</p>
+            <p class="numero-carrito">N° <span id="numeroCarrito"></span></p>
+            <p>Guardalo, porque lo vas a necesitar para consultar por tu compra. Ahora enviános tu pedido por WhatsApp o
+                Instagram (si elegís Instagram, mencioná tu número) y confirmamos stock, precio y envío.</p>
             <a id="enlaceWhatsapp" class="categoria-btn" href="#" target="_blank" rel="noopener noreferrer">Enviar por
                 WhatsApp</a>
-            <a class="categoria-btn" href="https://www.instagram.com/libelula._papeleria/" target="_blank"
-                rel="noopener noreferrer">Ir a Instagram</a>
+            <a class="categoria-btn" href="https://ig.me/m/libelula._papeleria" target="_blank"
+                rel="noopener noreferrer">Enviar por Instagram</a>
         </div>
     </main>
 

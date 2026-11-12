@@ -38,6 +38,16 @@ async function obtenerProducto(solicitud, respuesta) {
     }
 }
 
+async function obtenerCategorias(solicitud, respuesta) {
+    try {
+        const [filas] = await db.query("SELECT id, nombre FROM categoria");
+        respuesta.json(filas);
+    } catch (error) {
+        console.log(error);
+        respuesta.status(500).json({ mensaje: "Error al obtener las categorías" });
+    }
+}
+
 async function obtenerCategoria(solicitud, respuesta) {
     try {
         const [filas] = await db.query(
@@ -59,5 +69,6 @@ async function obtenerCategoria(solicitud, respuesta) {
 module.exports = {
     obtenerProductos,
     obtenerProducto,
+    obtenerCategorias,
     obtenerCategoria
 };

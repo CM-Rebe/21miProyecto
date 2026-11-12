@@ -114,9 +114,29 @@
             <p class="masVendidoInfo">
                 Agenda anual con planner anual, mensual y semanal. Incluye dos caras de stickers de la misma temática.
             </p>
-            <a href="#" class="categoria-btn">Ir</a>
+            <a href="#" class="categoria-btn" id="btnMasVendido" data-id="1">Ir</a>
         </div>
     </section>
+
+        <div id="modalProducto" class="modal">
+        <div class="modal-card">
+            <button id="cerrarModal" class="modal-cerrar" aria-label="Cerrar">&times;</button>
+
+            <img id="modalImagen" class="modal-imagen" alt="">
+
+            <div class="modal-info">
+                <h3 id="modalNombre" class="categoria-nombre"></h3>
+                <p id="modalDescripcion" class="modal-descripcion"></p>
+                <p id="modalPrecio" class="modal-precio"></p>
+
+                <button id="btnAgregar" class="categoria-btn">Agregar al carrito</button>
+
+                <div id="mensajeOk" class="mensaje-ok oculto">
+                    <p>¡Añadido con éxito! Para más detalles, ir al <a href="carrito.html">carrito</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <br><br><br>
 
@@ -127,8 +147,10 @@
                 <img class="footer-logo" src="multimedia/LogoLibelulaPapeleria.png" alt="Libélula Papelería">
                 <p class="footer-tagline">Dale color a tus días y organizá tus metas.</p>
                 <div class="footer-social">
-                    <a href="https://www.instagram.com/libelula._papeleria/?hl=es-la" target="_blank" aria-label="Instagram">
-                        <img src="multimedia/favicons/instagram.png" style="filter: brightness(0) invert(1)" alt="Instagram">
+                    <a href="https://www.instagram.com/libelula._papeleria/?hl=es-la" target="_blank"
+                        aria-label="Instagram">
+                        <img src="multimedia/favicons/instagram.png" style="filter: brightness(0) invert(1)"
+                            alt="Instagram">
                     </a>
                 </div>
             </div>
@@ -147,7 +169,8 @@
             <div class="footer-col">
                 <h3 class="footer-title">Medios de pago</h3>
                 <div class="footer-payment-icons">
-                    <img src="multimedia/favicons/pago-movil.png" style="filter: invert(1)" alt="Medio de pago (TRANSFERENCIA)">
+                    <img src="multimedia/favicons/pago-movil.png" style="filter: invert(1)"
+                        alt="Medio de pago (TRANSFERENCIA)">
                     <img src="multimedia/favicons/dinero.png" style="filter: invert(1)" alt="Medio de pago (EFECTIVO)">
                 </div>
 
@@ -170,13 +193,15 @@
                     </li>
                 </ul>
             </div>
-
         </div>
 
         <div class="footer-bottom">
             <p>Copyright Libélula Papelería - 2026. Todos los derechos reservados.</p>
         </div>
     </section>
+
+    <script src="modalProducto.js"></script>
+    <script src="inicio.js"></script>
 </body>
 
 </html>

@@ -18,6 +18,7 @@ function agregarAlCarrito(producto) {
             nombre: producto.nombre,
             precio: Number(producto.precio),
             imagen: producto.imagen,
+            personalizado: false,
             cantidad: 1
         });
     }
@@ -42,6 +43,16 @@ function cambiarCantidad(id, cambio) {
         return;
     }
 
+    guardarCarrito(carrito);
+}
+
+function cambiarPersonalizado(id, valor) {
+    const carrito = obtenerCarrito();
+    const item = carrito.find(item => item.id === id);
+
+    if (!item) return;
+
+    item.personalizado = valor;
     guardarCarrito(carrito);
 }
 

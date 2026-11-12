@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel</title>
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        #formProducto select,
+        #formProducto textarea,
+        #buscarCompra {
+            width: 100%;
+            margin-bottom: 16px;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 15px;
+        }
+
+        .panel-botones {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <main class="pag-main" style="padding-top: 60px;">
+        <h1 class="categorias-title">Panel de administración</h1>
+
+        <div class="panel-botones">
+            <button id="btnVerCompras" class="categoria-btn">Compras</button>
+            <button id="btnVerProductos" class="categoria-btn">Productos</button>
+            <button id="btnSalir" class="categoria-btn" style="margin-left: auto;">Salir</button>
+        </div>
+
+        <p id="mensaje" class="mensaje-ok oculto"></p>
+
+        <!-- COMPRAS -->
+        <section id="seccionCompras">
+            <h2 class="categorias-title">Compras</h2>
+
+            <input type="text" id="buscarCompra" placeholder="Buscar por número de carrito">
+            <div id="listaCompras"></div>
+        </section>
+
+        <!-- PRODUCTOS -->
+        <section id="seccionProductos" class="oculto">
+            <form id="formProducto" class="formulario-compra">
+                <h2 id="tituloFormulario">Añadir producto</h2>
+
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" maxlength="100" required>
+
+                <label for="categoria">Categoría</label>
+                <select id="categoria" required></select>
+
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" rows="3"></textarea>
+
+                <label for="precio">Precio</label>
+                <input type="number" id="precio" min="1" step="0.01" required>
+
+                <label for="imagen">Imagen (ej: imagenes/agenda-nueva.png)</label>
+                <input type="text" id="imagen" maxlength="255">
+
+                <div class="formulario-botones">
+                    <button type="button" id="btnCancelar" class="btn-quitar oculto">Cancelar edición</button>
+                    <button type="submit" id="btnGuardar" class="categoria-btn">Añadir</button>
+                </div>
+            </form>
+
+            <h2 class="categorias-title" style="margin-top: 40px;">Productos</h2>
+            <div id="listaProductos"></div>
+        </section>
+    </main>
+
+    <script>
+        // La ruta secreta es la misma de esta página
+        const base = window.location.pathname.replace("/panel", "");
+
+        const lista = document.querySelector("#listaProductos");
+        const listaCompras = document.querySelector("#listaCompras");
+        const formulario = document.querySelector("#formProducto");
+        const mensaje = document.querySelector("#mensaje");
+        const btnCancelar = document.querySelector("#btnCancelar");
+        const seccionCompras = document.querySelector("#seccionCompras");
+        const seccionProductos = document.querySelector("#seccionProductos");
+
+        let editandoId = null; // null = estamos añadiendo
+        let todasLasCompras = [];
+
+        function mostrarMensaje(texto, esError) {
+            mensaje.textContent = texto;
+            mensaje.classList.remove("oculto");
+            mensaje.style.color = esError ? "#b3261e" : "";
+        }
+
+        function escapar(texto) {
+            return String(texto || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function formatearPrecio(numero) {
+            return "$" + Number(numero).toLocaleString("es-AR");
+        }
+
+        //  Cambiar entre Compras y Productos 
+        document.querySelector("#btnVerCompras").addEventListener("click", () => {
+            seccionCompras.classList.remove("oculto");
+            seccionProductos.classList.add("oculto");
+            mensaje.classList.add("oculto");
+            cargarCompras();
+        });
+
+        document.querySelector("#btnVerProductos").addEventListener("click", () => {
+            seccionProductos.classList.remove("oculto");
+            seccionCompras.classList.add("oculto");
+            mensaje.classList.add("oculto");
+        });
+
+        //  Compras 
+        async function cargarCompras() {
+            const respuesta = await fetch(base + "/compras");
+            todasLasCompras = await respuesta.json();
+            mostrarCompras();
+        }
+
+        function mostrarCompras() {
+            const buscado = document.querySelector("#buscarCompra").value.trim();
+            const compras = todasLasCompras.filter(compra => String(compra.numero).includes(buscado));
+
+            if (compras.length === 0) {
+                listaCompras.innerHTML = "<p>No hay compras para mostrar.</p>";
+                return;
+            }
+
+            listaCompras.innerHTML = compras.map(compra => `
+                <div class="carrito-item" style="align-items: flex-start;">
+                    <div class="carrito-datos">
+                        <h3 class="categoria-nombre">N° ${compra.numero}</h3>
+                        <p class="categoria-desc">${new Date(compra.fecha).toLocaleString("es-AR")}</p>
+                        <p class="categoria-desc">
+                            ${escapar(compra.nombre)}<br>
+                            ${escapar(compra.mail)}<br>
+                            ${escapar(compra.telefono)}
+                        </p>
+                    </div>
+
+                    <div class="carrito-datos">
+                        ${compra.productos.map(producto => `
+                            <p class="categoria-desc">
+                                ${escapar(producto.nombre)} x${producto.cantidad}${producto.personalizado ? " (personalizado)" : ""}
+                            </p>
+                        `).join("")}
+                    </div>
+
+                    <p class="carrito-subtotal">${formatearPrecio(compra.total)}</p>
+                </div>
+            `).join("");
+        }
+
+        document.querySelector("#buscarCompra").addEventListener("input", mostrarCompras);
+
+        // Productos 
+        async function cargarCategorias() {
+            const respuesta = await fetch("/categorias");
+            const categorias = await respuesta.json();
+
+            document.querySelector("#categoria").innerHTML = categorias.map(categoria =>
+                `<option value="${categoria.id}">${categoria.nombre}</option>`
+            ).join("");
+        }
+
+        async function cargarProductos() {
+            const respuesta = await fetch("/productos");
+            const productos = await respuesta.json();
+
+            if (productos.length === 0) {
+                lista.innerHTML = "<p>Todavía no hay productos.</p>";
+                return;
+            }
+
+            lista.innerHTML = productos.map(producto => `
+                <div class="carrito-item">
+                    <img class="carrito-imagen" src="/${producto.imagen}" alt="${producto.nombre}">
+
+                    <div class="carrito-datos">
+                        <h3 class="categoria-nombre">${producto.nombre}</h3>
+                        <p class="categoria-desc">${formatearPrecio(producto.precio)}</p>
+                    </div>
+
+                    <button class="btn-quitar btn-editar" data-id="${producto.id}">Editar</button>
+                    <button class="btn-quitar btn-borrar" data-id="${producto.id}">Borrar</button>
+                </div>
+            `).join("");
+        }
+
+        function limpiarFormulario() {
+            editandoId = null;
+            formulario.reset();
+            document.querySelector("#tituloFormulario").textContent = "Añadir producto";
+            document.querySelector("#btnGuardar").textContent = "Añadir";
+            btnCancelar.classList.add("oculto");
+        }
+
+        // Editar y borrar
+        lista.addEventListener("click", async evento => {
+            const id = evento.target.dataset.id;
+
+            if (evento.target.classList.contains("btn-editar")) {
+                const respuesta = await fetch(`/productos/${id}`);
+                const producto = await respuesta.json();
+
+                editandoId = id;
+                formulario.nombre.value = producto.nombre;
+                formulario.categoria.value = producto.categoria_id;
+                formulario.descripcion.value = producto.descripcion || "";
+                formulario.precio.value = producto.precio;
+                formulario.imagen.value = producto.imagen || "";
+
+                document.querySelector("#tituloFormulario").textContent = "Editar producto";
+                document.querySelector("#btnGuardar").textContent = "Guardar cambios";
+                btnCancelar.classList.remove("oculto");
+                formulario.scrollIntoView({ behavior: "smooth" });
+            }
+
+            if (evento.target.classList.contains("btn-borrar")) {
+                if (!confirm("¿Seguro que querés borrar este producto?")) return;
+
+                const respuesta = await fetch(`${base}/productos/${id}`, { method: "DELETE" });
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    mostrarMensaje(resultado.mensaje, true);
+                    return;
+                }
+
+                mostrarMensaje("Producto borrado", false);
+                cargarProductos();
+            }
+        });
+
+        btnCancelar.addEventListener("click", limpiarFormulario);
+
+        // Añadir o guardar cambios
+        formulario.addEventListener("submit", async evento => {
+            evento.preventDefault();
+
+            const datos = {
+                nombre: formulario.nombre.value.trim(),
+                categoria_id: formulario.categoria.value,
+                descripcion: formulario.descripcion.value.trim(),
+                precio: formulario.precio.value,
+                imagen: formulario.imagen.value.trim()
+            };
+
+            const url = editandoId ? `${base}/productos/${editandoId}` : `${base}/productos`;
+            const metodo = editandoId ? "PUT" : "POST";
+
+            const respuesta = await fetch(url, {
+                method: metodo,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datos)
+            });
+            const resultado = await respuesta.json();
+
+            if (!respuesta.ok) {
+                mostrarMensaje(resultado.mensaje, true);
+                return;
+            }
+
+            mostrarMensaje(editandoId ? "Cambios guardados" : "Producto añadido", false);
+            limpiarFormulario();
+            cargarProductos();
+        });
+
+        // Salir 
+        document.querySelector("#btnSalir").addEventListener("click", async () => {
+            await fetch(base + "/salir", { method: "POST" });
+            window.location.href = "/";
+        });
+
+        cargarCompras();
+        cargarCategorias();
+        cargarProductos();
+    </script>
+</body>
+</html>

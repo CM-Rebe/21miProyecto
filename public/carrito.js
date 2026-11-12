@@ -1,17 +1,22 @@
 const lista = document.querySelector("#listaCarrito");
 const resumen = document.querySelector("#resumenCarrito");
 const totalCarrito = document.querySelector("#totalCarrito");
+const btnComprar = document.querySelector("#btnComprar");
+const formulario = document.querySelector("#formularioCompra");
+const mensajeError = document.querySelector("#mensajeError");
 const mensajeCompra = document.querySelector("#mensajeCompra");
 
-// LUEGO: número: código de país + área + número, sin "+" ni espacios
+// LUEGO!!!!!!!!!!!! número: código de país + área + número, sin "+" ni espacios
 const NUMERO_WHATSAPP = "00000";
 
 function mostrarCarrito() {
     const carrito = obtenerCarrito();
 
+    // Carrito vacío
     if (carrito.length === 0) {
         lista.innerHTML = `<p class="carrito-vacio">Tu carrito está vacío. <a href="index.html#categorias">¡Mirá nuestros productos!</a></p>`;
         resumen.classList.add("oculto");
+        formulario.classList.add("oculto");
         mensajeCompra.classList.add("oculto");
         return;
     }
@@ -31,6 +36,11 @@ function mostrarCarrito() {
                 <button class="btn-cantidad" data-id="${item.id}" data-cambio="1">+</button>
             </div>
 
+            <label class="carrito-personalizado">
+                <input type="checkbox" class="check-personalizado" data-id="${item.id}" ${item.personalizado ? "checked" : ""}>
+                Personalizado
+            </label>
+
             <p class="carrito-subtotal">${formatearPrecio(item.precio * item.cantidad)}</p>
             <button class="btn-quitar" data-id="${item.id}">Quitar</button>
         </div>
@@ -40,6 +50,7 @@ function mostrarCarrito() {
     resumen.classList.remove("oculto");
 }
 
+// cantidad y quitar
 lista.addEventListener("click", evento => {
     const id = Number(evento.target.dataset.id);
 
@@ -54,19 +65,96 @@ lista.addEventListener("click", evento => {
     }
 });
 
-document.querySelector("#btnComprar").addEventListener("click", () => {
-    const carrito = obtenerCarrito();
+// Personalizado
+lista.addEventListener("change", evento => {
+    if (evento.target.classList.contains("check-personalizado")) {
+        cambiarPersonalizado(Number(evento.target.dataset.id), evento.target.checked);
+    }
+});
 
-    let texto = "¡Hola! Quiero hacer este pedido:\n";
+// Comprar
+btnComprar.addEventListener("click", () => {
+    btnComprar.classList.add("oculto");
+    formulario.classList.remove("oculto");
+    formulario.scrollIntoView({ behavior: "smooth" });
+});
+
+// Volver
+document.querySelector("#btnVolver").addEventListener("click", () => {
+    formulario.classList.add("oculto");
+    btnComprar.classList.remove("oculto");
+});
+
+// Enviar el formulario
+formulario.addEventListener("submit", async evento => {
+    evento.preventDefault(); // evita que la página se recargue
+
+    const carrito = obtenerCarrito();
+    if (carrito.length === 0) return;
+
+    const botonEnviar = formulario.querySelector("button[type='submit']");
+    botonEnviar.disabled = true; // evita enviar dos veces
+    mensajeError.classList.add("oculto");
+
+    const datos = {
+        persona: {
+            nombre: formulario.nombre.value.trim(),
+            mail: formulario.mail.value.trim(),
+            telefono: formulario.telefono.value.trim()
+        },
+        productos: carrito.map(item => ({
+            id: item.id,
+            cantidad: item.cantidad,
+            personalizado: Boolean(item.personalizado)
+        }))
+    };
+
+    try {
+        const respuesta = await fetch("/compras", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+        });
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            mostrarError(resultado.mensaje);
+            return;
+        }
+
+        mostrarConfirmacion(resultado.numero, carrito);
+    } catch (error) {
+        mostrarError("No pudimos conectar con el servidor. Probá de nuevo.");
+    } finally {
+        botonEnviar.disabled = false;
+    }
+});
+
+function mostrarError(mensaje) {
+    mensajeError.textContent = mensaje;
+    mensajeError.classList.remove("oculto");
+}
+
+// compra guardada
+function mostrarConfirmacion(numero, carrito) {
+    // Armamos el texto del pedido antes de vaciar el carrito
+    let texto = `¡Hola! Hice el pedido N° ${numero}:\n`;
     carrito.forEach(item => {
-        texto += `- ${item.nombre} x${item.cantidad}: ${formatearPrecio(item.precio * item.cantidad)}\n`;
+        const personalizado = item.personalizado ? " (personalizado)" : "";
+        texto += `- ${item.nombre} x${item.cantidad}${personalizado}: ${formatearPrecio(item.precio * item.cantidad)}\n`;
     });
     texto += `Total: ${formatearPrecio(calcularTotal())}`;
 
+    document.querySelector("#numeroCarrito").textContent = numero;
     document.querySelector("#enlaceWhatsapp").href =
         `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(texto)}`;
 
+    guardarCarrito([]); // el carrito se vacía
+
+    lista.classList.add("oculto");
+    resumen.classList.add("oculto");
+    formulario.classList.add("oculto");
     mensajeCompra.classList.remove("oculto");
-});
+}
 
 mostrarCarrito();
