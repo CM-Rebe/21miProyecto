@@ -1,18 +1,54 @@
-const contenedor = document.querySelector("#productos");
+function obtenerCarrito() {
+    return JSON.parse(localStorage.getItem("carrito")) || [];
+}
 
-fetch("/productos")
-    .then(respuesta => respuesta.json())
-    .then(datos => {
+function guardarCarrito(carrito) {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
 
-        datos.forEach(producto => {
-            contenedor.innerHTML += `
-            <div class="categoria-card">
-                <img class="superImagen" src="${producto.imagen}" alt="${producto.nombre}">
-                <h3 class="categoria-nombre">${producto.nombre}</h3> 
-                <p class="categoria-desc">Precio: $${producto.precio}</p>
-                <a class="categoria-btn" href="/productos/${producto.id}">Ver producto</a>
-             </div>
-            `;
+function agregarAlCarrito(producto) {
+    const carrito = obtenerCarrito();
+    const existente = carrito.find(item => item.id === producto.id);
+
+    if (existente) {
+        existente.cantidad++;
+    } else {
+        carrito.push({
+            id: producto.id,
+            nombre: producto.nombre,
+            precio: Number(producto.precio),
+            imagen: producto.imagen,
+            cantidad: 1
         });
+    }
 
-    });
+    guardarCarrito(carrito);
+}
+
+function quitarDelCarrito(id) {
+    const carrito = obtenerCarrito().filter(item => item.id !== id);
+    guardarCarrito(carrito);
+}
+
+function cambiarCantidad(id, cambio) {
+    const carrito = obtenerCarrito();
+    const item = carrito.find(item => item.id === id);
+
+    if (!item) return;
+    item.cantidad += cambio;
+
+    if (item.cantidad <= 0) {
+        quitarDelCarrito(id);
+        return;
+    }
+
+    guardarCarrito(carrito);
+}
+
+function calcularTotal() {
+    return obtenerCarrito().reduce((total, item) => total + item.precio * item.cantidad, 0);
+}
+
+function formatearPrecio(numero) {
+    return "$" + Number(numero).toLocaleString("es-AR");
+}

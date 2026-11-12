@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libelula Papeleria - Carrito</title>
+
+    <link rel="icon" href="multimedia/LogoLibelulaPapeleria.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <script src="script.js"></script>
+
+    <header class="pag-header">
+        <div class="top">
+            <img class="logo-img" src="multimedia/LogoLibelulaPapeleria.png" alt="Logo">
+            <div class="slogan-slot" id="sloganSlot">Dale color a tus días y organiza tus metas</div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="preguntasFrecuentes.html">Preguntas Frecuentes</a></li>
+                <li><a href="comoComprar.html">Cómo Comprar</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="#" class="active">Carrito</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="pag-main">
+        <h1 class="categorias-title">Mi carrito</h1>
+
+        <div id="listaCarrito"></div>
+
+        <div id="resumenCarrito" class="carrito-resumen oculto">
+            <p class="carrito-total">Total: <strong id="totalCarrito">$0</strong></p>
+            <button id="btnComprar" class="categoria-btn">Comprar</button>
+        </div>
+
+        <div id="mensajeCompra" class="mensaje-ok oculto">
+            <p>¡Gracias por elegirnos! Enviános tu pedido por WhatsApp o Instagram y confirmamos stock, precio y envío.
+            </p>
+            <a id="enlaceWhatsapp" class="categoria-btn" href="#" target="_blank" rel="noopener noreferrer">Enviar por
+                WhatsApp</a>
+            <a class="categoria-btn" href="https://www.instagram.com/libelula._papeleria/" target="_blank"
+                rel="noopener noreferrer">Ir a Instagram</a>
+        </div>
+    </main>
+
+    <section id="footer">
+        <div class="footer-content">
+
+            <div class="footer-col footer-brand">
+                <img class="footer-logo" src="multimedia/LogoLibelulaPapeleria.png" alt="Libélula Papelería">
+                <p class="footer-tagline">Dale color a tus días y organizá tus metas.</p>
+                <div class="footer-social">
+                    <a href="https://www.instagram.com/libelula._papeleria/?hl=es-la" target="_blank"
+                        aria-label="Instagram">
+                        <img src="multimedia/favicons/instagram.png" style="filter: brightness(0) invert(1)"
+                            alt="Instagram">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Más Info</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#categorias">Productos</a></li>
+                    <li><a href="comoComprar.html">Cómo Comprar</a></li>
+                    <li><a href="preguntasFrecuentes.html">Preguntas Frecuentes</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Medios de pago</h3>
+                <div class="footer-payment-icons">
+                    <img src="multimedia/favicons/pago-movil.png" style="filter: invert(1)"
+                        alt="Medio de pago (TRANSFERENCIA)">
+                    <img src="multimedia/favicons/dinero.png" style="filter: invert(1)" alt="Medio de pago (EFECTIVO)">
+                </div>
+
+                <h3 class="footer-title footer-title-spaced">Contacto</h3>
+                <ul class="footer-contact">
+                    <li>
+                        <img class="footer-contact-icon" src="multimedia/favicons/logo-telefono.png"
+                            style="filter: brightness(0) invert(1)" alt="Teléfono">
+                        <span>(acá va el número)</span>
+                    </li>
+                    <li>
+                        <img class="footer-contact-icon" src="multimedia/favicons/sobre.png"
+                            style="filter: brightness(0) invert(1)" alt="Email">
+                        <span>libelulapapeleria66@gmail.com</span>
+                    </li>
+                    <li>
+                        <img class="footer-contact-icon" src="multimedia/favicons/instagram.png"
+                            style="filter: brightness(0) invert(1)" alt="Instagram">
+                        <span>libelula._papeleria</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>Copyright Libélula Papelería - 2026. Todos los derechos reservados.</p>
+        </div>
+    </section>
+
+    <script src="carrito.js"></script>
+</body>
+
+</html>
